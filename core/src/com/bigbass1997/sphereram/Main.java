@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.bigbass1997.sphereram.ScreenshotFactory;
 import com.bigbass1997.sphereram.fonts.FontManager;
+import com.bigbass1997.sphereram.world.Cylinder;
 import com.bigbass1997.sphereram.world.Sphere;
 import com.bigbass1997.sphereram.world.World;
 
@@ -45,6 +46,7 @@ public class Main extends ApplicationAdapter {
         
         world = new World(cam);
         world.addObject("TESTSPHERE", new Sphere(0, 0, 0, 500f, divisions, 0xFF00FFFF));
+        world.addObject("TESTCYLINDER", new Cylinder(0, 0, 0, 500f, 20f, 500f, divisions, 0x00FFFFFF));
 		
 		//Creates new stage for use with the debug text label
 		stage = new Stage();
