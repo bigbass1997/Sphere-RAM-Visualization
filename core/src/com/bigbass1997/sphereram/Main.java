@@ -84,6 +84,7 @@ public class Main extends ApplicationAdapter {
 		render.end();
 		
 		stage.draw();
+		system.render();
 	}
 	
 	private void update(){

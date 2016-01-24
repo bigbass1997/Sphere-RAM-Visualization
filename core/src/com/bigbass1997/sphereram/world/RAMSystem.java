@@ -6,6 +6,10 @@ import java.util.LinkedList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.bigbass1997.sphereram.fonts.FontManager;
 import com.bigbass1997.sphereram.ram.RAMUtil;
 
 public class RAMSystem {
@@ -21,6 +25,11 @@ public class RAMSystem {
 	public int n, sphereColor, cylColor;
 	
 	public Method method;
+
+	private Stage stage;
+	private Label infoLabel;
+	
+	private final String ln = "\n";
 	
 	public RAMSystem(String id, World world, float radius, int n, Method method, int sphereColor, int cylColor){
 		this.id = id;
@@ -32,6 +41,12 @@ public class RAMSystem {
 		this.method = method;
 		this.sphereColor = sphereColor;
 		this.cylColor = cylColor;
+		
+		stage = new Stage();
+		
+		infoLabel = new Label("", new Label.LabelStyle(FontManager.getFont("fonts/computer.ttf", 20).font, Color.WHITE));
+		
+		stage.addActor(infoLabel);
 		
 		recreate();
 	}
@@ -101,6 +116,10 @@ public class RAMSystem {
 		}
 	}
 	
+	public void render(){
+		stage.draw();
+	}
+	
 	public void update(float delta){
 		Input input = Gdx.input;
 		
@@ -118,5 +137,33 @@ public class RAMSystem {
 			}
 			recreate();
 		}
+		
+		if(input.isKeyPressed(Keys.X)){
+			radius += 1f;
+			recreate();
+		}else if(input.isKeyPressed(Keys.C)){
+			radius -= 1f;
+			if(radius < 1) radius = 1;
+			recreate();
+		}
+		
+		if(input.isKeyPressed(Keys.LEFT)){
+			n -= 1;
+			if(n < 2) n = 2;
+			recreate();
+		}else if(input.isKeyPressed(Keys.RIGHT)){
+			n += 1;
+			recreate();
+		}
+		
+		String infoData =
+				"System Data:" + ln +
+				"  radius: " + radius + ln +
+				"  n: " + n + ln +
+				"  CylDiv: " + ((Cylinder) world.objects.get(idPrefix + "CYLINDER_0")).divisions + ln +
+				"  SphDiv: " + ((Sphere) world.objects.get(idPrefix + "SPHERE")).divisions;
+		
+		infoLabel.setText(infoData);
+		infoLabel.setPosition(10, Gdx.graphics.getHeight() - (infoLabel.getPrefHeight() / 2) - 5);
 	}
 }
