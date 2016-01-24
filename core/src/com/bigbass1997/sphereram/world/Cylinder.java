@@ -83,7 +83,7 @@ public class Cylinder extends Object {
 	private Model createModel(int divisions){
 		ModelBuilder modelBuilder = new ModelBuilder();
 		return modelBuilder.createCylinder(size.x, size.y, size.z,
-				divisions, GL20.GL_TRIANGLES,
+				divisions, GL20.GL_LINES,
 				new Material(ColorAttribute.createDiffuse(new Color(color))),
 				Usage.Position | Usage.Normal);
 	}

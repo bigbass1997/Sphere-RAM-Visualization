@@ -36,16 +36,6 @@ public class Sphere extends Object {
 	@Override
 	public void update(float delta){
 		Input input = Gdx.input;
-		
-		//Moves the sphere in a random direction from its previous position
-		/*Random rand = new Random();
-		
-		float dif = 3f;
-		float dx = (rand.nextFloat() * dif) - (dif / 2);
-		float dy = (rand.nextFloat() * dif) - (dif / 2);
-		float dz = (rand.nextFloat() * dif) - (dif / 2);
-		
-		this.addPos(dx, dy, dz);*/
 
 		if(input.isKeyPressed(Keys.UP)){
 			divisions += 1;

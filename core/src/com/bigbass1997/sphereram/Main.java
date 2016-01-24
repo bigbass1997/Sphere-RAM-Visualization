@@ -16,9 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.bigbass1997.sphereram.ScreenshotFactory;
 import com.bigbass1997.sphereram.fonts.FontManager;
-import com.bigbass1997.sphereram.world.Cylinder;
-import com.bigbass1997.sphereram.world.Sphere;
 import com.bigbass1997.sphereram.world.World;
+import com.bigbass1997.sphereram.world.RAMSystem;
 
 public class Main extends ApplicationAdapter {
 	
@@ -28,10 +27,11 @@ public class Main extends ApplicationAdapter {
 	private ShapeRenderer sr;
 	public static Camera cam;
 	public World world;
+	public RAMSystem system;
 	
 	public boolean isScreenshotReady = true;
 	
-	public final int divisions = 10;
+	public final int divisions = 20;
 	
 	@Override
 	public void create () {
@@ -45,8 +45,10 @@ public class Main extends ApplicationAdapter {
 		cam.update();
         
         world = new World(cam);
-        world.addObject("TESTSPHERE", new Sphere(0, 0, 0, 500f, divisions, 0xFF00FFFF));
-        world.addObject("TESTCYLINDER", new Cylinder(0, 0, 0, 500f, 20f, 500f, divisions, 0x00FFFFFF));
+        /*world.addObject("TESTSPHERE", new Sphere(0, 0, 0, 500f, divisions, 0xFF00FFFF));
+        world.addObject("TESTCYLINDER", new Cylinder(0, 0, 0, 500f, 20f, 500f, divisions, 0x00FFFFFF));*/
+        
+        system = new RAMSystem("TEST", world, 500f, 10, 0xFF00FFFF, 0x00FFFFFF);
 		
 		//Creates new stage for use with the debug text label
 		stage = new Stage();
