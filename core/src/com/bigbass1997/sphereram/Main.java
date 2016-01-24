@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.bigbass1997.sphereram.ScreenshotFactory;
 import com.bigbass1997.sphereram.fonts.FontManager;
+import com.bigbass1997.sphereram.world.RAMSystem.Method;
 import com.bigbass1997.sphereram.world.World;
 import com.bigbass1997.sphereram.world.RAMSystem;
 
@@ -45,10 +46,8 @@ public class Main extends ApplicationAdapter {
 		cam.update();
         
         world = new World(cam);
-        /*world.addObject("TESTSPHERE", new Sphere(0, 0, 0, 500f, divisions, 0xFF00FFFF));
-        world.addObject("TESTCYLINDER", new Cylinder(0, 0, 0, 500f, 20f, 500f, divisions, 0x00FFFFFF));*/
         
-        system = new RAMSystem("TEST", world, 500f, 10, 0xFF00FFFF, 0x00FFFFFF);
+        system = new RAMSystem("TEST", world, 500f, 10, Method.LEFT, 0xFF00FFFF, 0x00FFFFFF);
 		
 		//Creates new stage for use with the debug text label
 		stage = new Stage();
@@ -96,10 +95,11 @@ public class Main extends ApplicationAdapter {
 		//Debug Label Text Update
 		String debugLabelText =
 				"FPS: " + Gdx.graphics.getFramesPerSecond() + "\n" +
-				"delta: " + delta + "\n";
+				"delta: " + delta + "\n" + 
+				"method: " + system.method;
 		
 		debugLabel.setText(debugLabelText);
-		debugLabel.setPosition(10, (debugLabel.getTop() - debugLabel.getY()) + 15);
+		debugLabel.setPosition(10, (debugLabel.getTop() - debugLabel.getY()) + 25);
 		
 		if(input.isKeyPressed(Keys.Z) && isScreenshotReady){
 			ScreenshotFactory.saveScreen();
@@ -107,6 +107,8 @@ public class Main extends ApplicationAdapter {
 		} else if(!input.isKeyPressed(Keys.Z) && !isScreenshotReady){
 			isScreenshotReady = true;
 		}
+		
+		system.update(delta);
 	}
 	
 	@Override

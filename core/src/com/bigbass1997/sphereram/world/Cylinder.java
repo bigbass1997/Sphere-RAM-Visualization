@@ -22,8 +22,8 @@ public class Cylinder extends Object {
 	}
 	
 	public Cylinder(float x, float y, float z, float sx, float sy, float sz, int divisions, int color){
-		this.pos = new Vector3(x, y, z);
-		this.size = new Vector3(sx, sy, sz);
+		this.pos = new Vector3((x/2) + (sy/4), y/2, z/2);
+		this.size = new Vector3(sx, sy/2, sz);
 		this.divisions = divisions;
 		this.color = color;
 		
@@ -37,16 +37,6 @@ public class Cylinder extends Object {
 	@Override
 	public void update(float delta){
 		Input input = Gdx.input;
-		
-		//Moves the sphere in a random direction from its previous position
-		/*Random rand = new Random();
-		
-		float dif = 3f;
-		float dx = (rand.nextFloat() * dif) - (dif / 2);
-		float dy = (rand.nextFloat() * dif) - (dif / 2);
-		float dz = (rand.nextFloat() * dif) - (dif / 2);
-		
-		this.addPos(dx, dy, dz);*/
 
 		if(input.isKeyPressed(Keys.UP)){
 			divisions += 1;
@@ -56,13 +46,6 @@ public class Cylinder extends Object {
 			divisions -= 1;
 			if(divisions < 2) divisions = 2;
 			setDivisions(divisions);
-		}
-		
-		float speed = 50f * delta;
-		if(input.isKeyPressed(Keys.R)){
-			this.addPos(-speed, 0, 0);
-		}else if(input.isKeyPressed(Keys.F)){
-			this.addPos(speed, 0, 0);
 		}
 	}
 	
