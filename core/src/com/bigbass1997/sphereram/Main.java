@@ -14,8 +14,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.bigbass1997.sphereram.ScreenshotFactory;
 import com.bigbass1997.sphereram.fonts.FontManager;
+import com.bigbass1997.sphereram.skins.SkinManager;
 import com.bigbass1997.sphereram.world.RAMSystem.Method;
 import com.bigbass1997.sphereram.world.World;
 import com.bigbass1997.sphereram.world.RAMSystem;
@@ -24,6 +26,7 @@ public class Main extends ApplicationAdapter {
 	
 	public Stage stage;
 	public Label debugLabel;
+	public TextField textField;
 	private ImmediateModeRenderer20 render;
 	private ShapeRenderer sr;
 	public static Camera cam;
@@ -49,14 +52,20 @@ public class Main extends ApplicationAdapter {
         
         system = new RAMSystem("TEST", world, 500f, 10, Method.LEFT, 0xFF00FFFF, 0x00FFFFFF);
 		
-		//Creates new stage for use with the debug text label
+		//Creates new stage and sets mouse detection for it.
 		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
 		
 		debugLabel = new Label("", new Label.LabelStyle(FontManager.getFont("fonts/computer.ttf", 20).font, Color.WHITE));
 		debugLabel.setPosition(10, Gdx.graphics.getHeight() - debugLabel.getHeight());
 		
+		//For testing only, will be moved/removed later
+		textField = new TextField("TextField", SkinManager.getSkin("fonts/computer.ttf", 20));
+		textField.setPosition(10, 40);
+		
 		//Adds the debug label to the stage so that it can be rendered/updated
 		stage.addActor(debugLabel);
+		stage.addActor(textField);
 		
 		render = new ImmediateModeRenderer20(50000, false, true, 0);
 		sr = new ShapeRenderer();
@@ -90,6 +99,8 @@ public class Main extends ApplicationAdapter {
 	private void update(){
 		Input input = Gdx.input;
 		float delta = Gdx.graphics.getDeltaTime();
+		
+		stage.act(delta);
 		
 		world.update(delta);
 		
