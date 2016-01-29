@@ -1,5 +1,6 @@
 package com.bigbass1997.sphereram.world;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -7,10 +8,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.utils.Align;
 import com.bigbass1997.sphereram.fonts.FontManager;
+import com.bigbass1997.sphereram.graphics.SystemGUI;
 import com.bigbass1997.sphereram.ram.RAMUtil;
+import com.bigbass1997.sphereram.skins.SkinManager;
 
 public class RAMSystem {
 	
@@ -26,8 +30,9 @@ public class RAMSystem {
 	
 	public Method method;
 
-	private Stage stage;
-	private Label infoLabel;
+	private SystemGUI gui;
+	
+	private LinkedList<Double> yList;
 	
 	private final String ln = "\n";
 	
@@ -42,11 +47,29 @@ public class RAMSystem {
 		this.sphereColor = sphereColor;
 		this.cylColor = cylColor;
 		
-		stage = new Stage();
+		gui = new SystemGUI();
 		
-		infoLabel = new Label("", new Label.LabelStyle(FontManager.getFont("fonts/computer.ttf", 20).font, Color.WHITE));
+		String[] ids = new String[]{"Radius", "Cylinders", "Method"};
 		
-		stage.addActor(infoLabel);
+		TextField tmpField;
+		Label tmpLabel;
+		float buf = 5f;
+		for(int i = 0; i < ids.length; i++){
+			tmpField = new TextField("0", SkinManager.getSkin("fonts/computer.ttf", 26));
+			tmpField.setWidth(50);
+			tmpField.setPosition(Gdx.graphics.getWidth() - tmpField.getWidth() - buf, Gdx.graphics.getHeight() - ((buf + tmpField.getHeight()) * (i + 1)));
+			gui.addActor(idPrefix + "INPUTFIELD_" + ids[i], tmpField);
+			
+			tmpLabel = new Label(ids[i] + ":", new Label.LabelStyle(FontManager.getFont("fonts/computer.ttf", 28).font, Color.WHITE));
+			tmpLabel.setAlignment(Align.right);
+			tmpLabel.setPosition(
+					tmpField.getX() - tmpLabel.getPrefWidth() - 2,
+					tmpField.getY() + ((tmpLabel.getHeight() - tmpLabel.getStyle().font.getLineHeight()) * 2)
+			);
+			gui.addActor(idPrefix + "LABEL_" + ids[i], tmpLabel);
+		}
+		
+		gui.addActor(idPrefix + "INFOLABEL", new Label("", new Label.LabelStyle(FontManager.getFont("fonts/computer.ttf", 20).font, Color.WHITE)));
 		
 		recreate();
 	}
@@ -73,13 +96,9 @@ public class RAMSystem {
 	}
 	
 	private void createCylinders(Method method){
-		//world.addObject(idPrefix + "CYLINDER_" + i, new Cylinder(x, 0, 0, y, width, y, 50, cylColor));
-		
 		double min = -radius;
 		double max = radius;
 		double width = (max - min) / n;
-		
-		LinkedList<Double> yList;
 		
 		double x = min;
 		switch(method){
@@ -117,7 +136,7 @@ public class RAMSystem {
 	}
 	
 	public void render(){
-		stage.draw();
+		gui.render();
 	}
 	
 	public void update(float delta){
@@ -156,14 +175,25 @@ public class RAMSystem {
 			recreate();
 		}
 		
+		gui.update(delta);
+		
 		String infoData =
 				"System Data:" + ln +
 				"  radius: " + radius + ln +
 				"  n: " + n + ln +
 				"  CylDiv: " + ((Cylinder) world.objects.get(idPrefix + "CYLINDER_0")).divisions + ln +
-				"  SphDiv: " + ((Sphere) world.objects.get(idPrefix + "SPHERE")).divisions;
+				"  SphDiv: " + ((Sphere) world.objects.get(idPrefix + "SPHERE")).divisions + ln +
+				"  TotalVol: ";
 		
-		infoLabel.setText(infoData);
-		infoLabel.setPosition(10, Gdx.graphics.getHeight() - (infoLabel.getPrefHeight() / 2) - 5);
+		BigDecimal bd = BigDecimal.valueOf(RAMUtil.getTotalVolume(yList, (radius + radius) / n));
+		infoData += bd.toPlainString();
+		
+		Label tmpLabel = ((Label) gui.getActor(idPrefix + "INFOLABEL"));
+		tmpLabel.setText(infoData);
+		tmpLabel.setPosition(10, Gdx.graphics.getHeight() - (tmpLabel.getPrefHeight() / 2) - 5);
+	}
+	
+	public void dispose(){
+		gui.dispose();
 	}
 }

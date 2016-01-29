@@ -72,6 +72,30 @@ public class RAMUtil {
 		return total;
 	}
 	
+	public static double getTotalVolume(LinkedList<Double> yList, double width){
+		double total = 0;
+
+		Variable x = Variable.make("x");
+		Variable r = Variable.make("r");
+		Expr cylVol = null;
+		try {
+			cylVol = Parser.parse("x*(pi*(r^2))");
+		} catch (SyntaxException e) {
+			e.printStackTrace();
+			return total;
+		}
+		
+		x.setValue(width);
+		for(int i = 0; i < yList.size() - 1; i++){
+			r.setValue(yList.get(i));
+			
+			double val = cylVol.value();
+			total += val;
+		}
+		
+		return total;
+	}
+	
 	/**
 	 * <p>Gets the list of y values based on a certain width, used to increment the x value used
 	 * in the function, according to the "function" that is hard coded into this method.</p>
