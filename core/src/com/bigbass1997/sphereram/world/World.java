@@ -73,7 +73,7 @@ public class World {
 		
 		Input input = Gdx.input;
 		
-		float speed = 50f * Gdx.graphics.getDeltaTime();
+		float speed = 10f * Gdx.graphics.getDeltaTime();
 		float mult = 2.0f;
 		
 		if (input.isKeyPressed(Keys.W)) {
@@ -102,10 +102,10 @@ public class World {
 		}
 		
 		if(input.isKeyPressed(Keys.Q)){
-			cam.rotate(-speed*mult, cam.direction.x, cam.direction.y, cam.direction.z);
+			cam.rotate(-speed*(mult * 2), cam.direction.x, cam.direction.y, cam.direction.z);
 		}
 		if(input.isKeyPressed(Keys.E)){
-			cam.rotate(speed*mult, cam.direction.x, cam.direction.y, cam.direction.z);
+			cam.rotate(speed*(mult * 2), cam.direction.x, cam.direction.y, cam.direction.z);
 		}
 		
 		if(input.isButtonPressed(Buttons.LEFT)){

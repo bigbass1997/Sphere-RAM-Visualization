@@ -25,12 +25,16 @@ public class RAMSystem {
 	private final String id, idPrefix;
 	
 	private World world;
-	public float radius;
-	public int n, sphereColor, cylColor;
+	public float radius, oldRadius;
+	public int n, oldN, sphereColor, cylColor;
+
+	private TextField tmpField;
+	private Label tmpLabel;
 	
 	public Method method;
 
 	private SystemGUI gui;
+	private final String[] inputIds = new String[]{"Radius", "Cylinders"};
 	
 	private LinkedList<Double> yList;
 	
@@ -49,24 +53,20 @@ public class RAMSystem {
 		
 		gui = new SystemGUI();
 		
-		String[] ids = new String[]{"Radius", "Cylinders", "Method"};
-		
-		TextField tmpField;
-		Label tmpLabel;
 		float buf = 5f;
-		for(int i = 0; i < ids.length; i++){
-			tmpField = new TextField("0", SkinManager.getSkin("fonts/computer.ttf", 26));
+		for(int i = 0; i < inputIds.length; i++){
+			tmpField = new TextField("5", SkinManager.getSkin("fonts/computer.ttf", 26));
 			tmpField.setWidth(50);
 			tmpField.setPosition(Gdx.graphics.getWidth() - tmpField.getWidth() - buf, Gdx.graphics.getHeight() - ((buf + tmpField.getHeight()) * (i + 1)));
-			gui.addActor(idPrefix + "INPUTFIELD_" + ids[i], tmpField);
+			gui.addActor(idPrefix + "INPUTFIELD_" + inputIds[i], tmpField);
 			
-			tmpLabel = new Label(ids[i] + ":", new Label.LabelStyle(FontManager.getFont("fonts/computer.ttf", 28).font, Color.WHITE));
+			tmpLabel = new Label(inputIds[i] + ":", new Label.LabelStyle(FontManager.getFont("fonts/computer.ttf", 28).font, Color.WHITE));
 			tmpLabel.setAlignment(Align.right);
 			tmpLabel.setPosition(
 					tmpField.getX() - tmpLabel.getPrefWidth() - 2,
 					tmpField.getY() + ((tmpLabel.getHeight() - tmpLabel.getStyle().font.getLineHeight()) * 2)
 			);
-			gui.addActor(idPrefix + "LABEL_" + ids[i], tmpLabel);
+			gui.addActor(idPrefix + "LABEL_" + inputIds[i], tmpLabel);
 		}
 		
 		gui.addActor(idPrefix + "INFOLABEL", new Label("", new Label.LabelStyle(FontManager.getFont("fonts/computer.ttf", 20).font, Color.WHITE)));
@@ -75,6 +75,13 @@ public class RAMSystem {
 	}
 	
 	public void recreate(){
+		//Run checks on current variables in case of errors
+		if(radius < 0.1f || n < 2){
+			radius = oldRadius;
+			n = oldN;
+			return;
+		}
+		
 		//Find all existing objects of this system
 		ArrayList<String> removeList = new ArrayList<String>();
 		for(String id : world.objects.keySet()){
@@ -142,6 +149,24 @@ public class RAMSystem {
 	public void update(float delta){
 		Input input = Gdx.input;
 		
+		boolean toRecreate = false;
+		
+		tmpField = (TextField) gui.getActor(idPrefix + "INPUTFIELD_Radius");
+		try {
+			radius = Float.valueOf(tmpField.getText());
+		} catch(NumberFormatException e) {}
+		
+		if(oldRadius != radius) toRecreate = true;
+		
+		tmpField = (TextField) gui.getActor(idPrefix + "INPUTFIELD_Cylinders");
+		try {
+			n = Integer.valueOf(tmpField.getText());
+			if(n > 10000) n = oldN;
+		} catch(NumberFormatException e) {}
+		
+		if(oldN != n) toRecreate = true;
+		
+		//TODO Replace with Select box (similar to TextField)
 		if(input.isKeyJustPressed(Keys.T)){
 			switch(method){
 			case LEFT:
@@ -154,26 +179,12 @@ public class RAMSystem {
 				method = Method.LEFT;
 				break;
 			}
-			recreate();
+			toRecreate = true;
 		}
 		
-		if(input.isKeyPressed(Keys.X)){
-			radius += 1f;
-			recreate();
-		}else if(input.isKeyPressed(Keys.C)){
-			radius -= 1f;
-			if(radius < 1) radius = 1;
-			recreate();
-		}
-		
-		if(input.isKeyPressed(Keys.LEFT)){
-			n -= 1;
-			if(n < 2) n = 2;
-			recreate();
-		}else if(input.isKeyPressed(Keys.RIGHT)){
-			n += 1;
-			recreate();
-		}
+		if(toRecreate) recreate();
+		oldRadius = radius;
+		oldN = n;
 		
 		gui.update(delta);
 		

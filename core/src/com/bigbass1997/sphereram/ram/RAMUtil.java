@@ -74,6 +74,7 @@ public class RAMUtil {
 	
 	public static double getTotalVolume(LinkedList<Double> yList, double width){
 		double total = 0;
+		if(width == 0 || Double.isInfinite(width) || Double.isNaN(width)) return total;
 
 		Variable x = Variable.make("x");
 		Variable r = Variable.make("r");

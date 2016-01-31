@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.bigbass1997.sphereram.ScreenshotFactory;
@@ -39,8 +38,8 @@ public class Main extends ApplicationAdapter {
 		FontManager.addFont("fonts/computer.ttf"); //Added font to be used with Debug Text
 		
 		cam = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.position.set(500f, 500f, 500f);
-		cam.lookAt(Vector3.Zero);
+		cam.position.set(50f, 50f, 50f);
+		cam.lookAt(0f, 0f, 0f);
 		cam.near = 1f;
 		cam.far = 5000f;
 		cam.update();
