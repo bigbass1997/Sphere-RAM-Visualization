@@ -89,6 +89,7 @@ public class RAMUtil {
 		x.setValue(width);
 		for(int i = 0; i < yList.size() - 1; i++){
 			r.setValue(yList.get(i));
+			if(Double.isNaN(r.value())) r.setValue(0);
 			
 			double val = cylVol.value();
 			total += val;
