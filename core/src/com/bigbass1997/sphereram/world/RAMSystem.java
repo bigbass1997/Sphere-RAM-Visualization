@@ -56,7 +56,7 @@ public class RAMSystem {
 		float buf = 5f;
 		for(int i = 0; i < inputIds.length; i++){
 			tmpField = new TextField("5", SkinManager.getSkin("fonts/computer.ttf", 26));
-			tmpField.setWidth(50);
+			tmpField.setWidth(60);
 			tmpField.setPosition(Gdx.graphics.getWidth() - tmpField.getWidth() - buf, Gdx.graphics.getHeight() - ((buf + tmpField.getHeight()) * (i + 1)));
 			gui.addActor(idPrefix + "INPUTFIELD_" + inputIds[i], tmpField);
 			
