@@ -97,11 +97,10 @@ public class Main extends ApplicationAdapter {
 		//Debug Label Text Update
 		String debugLabelText =
 				"FPS: " + Gdx.graphics.getFramesPerSecond() + "\n" +
-				"delta: " + delta + "\n" + 
-				"method: " + system.method;
+				"delta: " + delta;
 		
 		debugLabel.setText(debugLabelText);
-		debugLabel.setPosition(10, (debugLabel.getTop() - debugLabel.getY()) + 25);
+		debugLabel.setPosition(10, (debugLabel.getTop() - debugLabel.getY()) + 20);
 		
 		if(input.isKeyPressed(Keys.Z) && isScreenshotReady){
 			ScreenshotFactory.saveScreen();

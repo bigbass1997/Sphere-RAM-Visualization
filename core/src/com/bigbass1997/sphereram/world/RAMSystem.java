@@ -5,13 +5,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Align;
-import com.bigbass1997.sphereram.fonts.FontManager;
 import com.bigbass1997.sphereram.graphics.SystemGUI;
 import com.bigbass1997.sphereram.ram.RAMUtil;
 import com.bigbass1997.sphereram.skins.SkinManager;
@@ -30,8 +28,9 @@ public class RAMSystem {
 
 	private TextField tmpField;
 	private Label tmpLabel;
+	private SelectBox<String> tmpSelectBox;
 	
-	public Method method;
+	public Method method, oldMethod;
 
 	private SystemGUI gui;
 	private final String[] inputIds = new String[]{"Radius", "Cylinders"};
@@ -51,16 +50,23 @@ public class RAMSystem {
 		this.sphereColor = sphereColor;
 		this.cylColor = cylColor;
 		
+		oldRadius = this.radius;
+		oldN = this.n;
+		oldMethod = this.method;
+		
 		gui = new SystemGUI();
 		
 		float buf = 5f;
+		
+		//TEXT FIELDS + LABELS\\
 		for(int i = 0; i < inputIds.length; i++){
 			tmpField = new TextField("5", SkinManager.getSkin("fonts/computer.ttf", 26));
 			tmpField.setWidth(60);
 			tmpField.setPosition(Gdx.graphics.getWidth() - tmpField.getWidth() - buf, Gdx.graphics.getHeight() - ((buf + tmpField.getHeight()) * (i + 1)));
 			gui.addActor(idPrefix + "INPUTFIELD_" + inputIds[i], tmpField);
 			
-			tmpLabel = new Label(inputIds[i] + ":", new Label.LabelStyle(FontManager.getFont("fonts/computer.ttf", 28).font, Color.WHITE));
+			tmpLabel = new Label(inputIds[i] + ":", SkinManager.getSkin("fonts/computer.ttf", 28));
+			tmpLabel.setColor(Color.WHITE);
 			tmpLabel.setAlignment(Align.right);
 			tmpLabel.setPosition(
 					tmpField.getX() - tmpLabel.getPrefWidth() - 2,
@@ -68,8 +74,28 @@ public class RAMSystem {
 			);
 			gui.addActor(idPrefix + "LABEL_" + inputIds[i], tmpLabel);
 		}
+		//-------//
 		
-		gui.addActor(idPrefix + "INFOLABEL", new Label("", new Label.LabelStyle(FontManager.getFont("fonts/computer.ttf", 20).font, Color.WHITE)));
+		//METHOD SELECT BOX + LABEL\\
+		tmpSelectBox = new SelectBox<String>(SkinManager.getSkin("fonts/computer.ttf", 26));
+		tmpSelectBox.setWidth(70);
+		tmpSelectBox.setPosition(Gdx.graphics.getWidth() - tmpSelectBox.getWidth() - buf, Gdx.graphics.getHeight() - ((buf + tmpSelectBox.getHeight()) * (inputIds.length + 1)) + buf);
+		tmpSelectBox.setItems("LEFT", "MIDDLE", "RIGHT");
+		gui.addActor(idPrefix + "SELECTBOX_Method", tmpSelectBox);
+		
+		tmpLabel = new Label("Method:", SkinManager.getSkin("fonts/computer.ttf", 28));
+		tmpLabel.setColor(Color.WHITE);
+		tmpLabel.setAlignment(Align.right);
+		tmpLabel.setPosition(
+				tmpSelectBox.getX() - tmpLabel.getPrefWidth() - 2,
+				tmpSelectBox.getY() + ((tmpLabel.getHeight() - tmpLabel.getStyle().font.getLineHeight()) * 2)
+		);
+		gui.addActor(idPrefix + "LABEL_Method", tmpLabel);
+		//-------//
+		
+		//Data Label
+		gui.addActor(idPrefix + "INFOLABEL", new Label("", SkinManager.getSkin("fonts/computer.ttf", 24)));
+		gui.getActor(idPrefix + "INFOLABEL").setColor(Color.WHITE);
 		
 		recreate();
 	}
@@ -147,44 +173,37 @@ public class RAMSystem {
 	}
 	
 	public void update(float delta){
-		Input input = Gdx.input;
-		
 		boolean toRecreate = false;
 		
+		//TextField for Radius
 		tmpField = (TextField) gui.getActor(idPrefix + "INPUTFIELD_Radius");
 		try {
 			radius = Float.valueOf(tmpField.getText());
 		} catch(NumberFormatException e) {}
-		
 		if(oldRadius != radius) toRecreate = true;
 		
+		//TextField for Cylinders
 		tmpField = (TextField) gui.getActor(idPrefix + "INPUTFIELD_Cylinders");
 		try {
 			n = Integer.valueOf(tmpField.getText());
 			if(n > 10000) n = oldN;
 		} catch(NumberFormatException e) {}
-		
 		if(oldN != n) toRecreate = true;
 		
-		//TODO Replace with Select box (similar to TextField)
-		if(input.isKeyJustPressed(Keys.T)){
-			switch(method){
-			case LEFT:
-				method = Method.MIDDLE;
-				break;
-			case MIDDLE:
-				method = Method.RIGHT;
-				break;
-			case RIGHT:
-				method = Method.LEFT;
-				break;
-			}
-			toRecreate = true;
+		//SelectBox for Method
+		try {
+			@SuppressWarnings("unchecked")
+			SelectBox<String> tmpbox = (SelectBox<String>) gui.getActor(idPrefix + "SELECTBOX_Method");
+			method = Method.valueOf(tmpbox.getSelected());
+		} catch(Exception e) {
+			method = oldMethod;
 		}
+		if(!oldMethod.equals(method)) toRecreate = true;
 		
 		if(toRecreate) recreate();
 		oldRadius = radius;
 		oldN = n;
+		oldMethod = method;
 		
 		gui.update(delta);
 		
@@ -197,7 +216,9 @@ public class RAMSystem {
 				"  TotalVol: ";
 		
 		BigDecimal bd = BigDecimal.valueOf(RAMUtil.getTotalVolume(yList, (radius + radius) / n));
-		infoData += bd.toPlainString();
+		infoData += bd.toPlainString() + ln;
+		
+		infoData += "  Method: " + method.name();
 		
 		Label tmpLabel = ((Label) gui.getActor(idPrefix + "INFOLABEL"));
 		tmpLabel.setText(infoData);
