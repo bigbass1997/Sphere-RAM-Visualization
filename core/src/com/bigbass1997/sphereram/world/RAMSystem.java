@@ -58,7 +58,7 @@ public class RAMSystem {
 		
 		float buf = 5f;
 		
-		//TEXT FIELDS + LABELS\\
+		//SYSTEM TEXT FIELDS + LABELS\\
 		for(int i = 0; i < inputIds.length; i++){
 			tmpField = new TextField("5", SkinManager.getSkin("fonts/computer.ttf", 26));
 			tmpField.setWidth(60);
@@ -74,6 +74,22 @@ public class RAMSystem {
 			);
 			gui.addActor(idPrefix + "LABEL_" + inputIds[i], tmpLabel);
 		}
+		//-------//
+		
+		//CAMERA TEXT FIELD + LABEL\\
+		tmpField = new TextField("20", SkinManager.getSkin("fonts/computer.ttf", 20));
+		tmpField.setWidth(35);
+		tmpField.setPosition(Gdx.graphics.getWidth() - tmpField.getWidth() - buf, buf);
+		gui.addActor(idPrefix + "INPUTFIELD_CamSpeed", tmpField);
+		
+		tmpLabel = new Label("CamSpeed:", SkinManager.getSkin("fonts/computer.ttf", 20));
+		tmpLabel.setColor(Color.WHITE);
+		tmpLabel.setAlignment(Align.right);
+		tmpLabel.setPosition(
+				tmpField.getX() - tmpLabel.getPrefWidth() - 2,
+				tmpField.getY() + ((tmpLabel.getHeight() - tmpLabel.getStyle().font.getLineHeight()) * 2)
+		);
+		gui.addActor(idPrefix + "LABEL_CamSpeed", tmpLabel);
 		//-------//
 		
 		//METHOD SELECT BOX + LABEL\\
@@ -174,6 +190,12 @@ public class RAMSystem {
 	
 	public void update(float delta){
 		boolean toRecreate = false;
+		
+		//TextField for CamSpeed
+		tmpField = (TextField) gui.getActor(idPrefix + "INPUTFIELD_CamSpeed");
+		try {
+			world.camSpeed = Float.valueOf(tmpField.getText());
+		} catch(NumberFormatException e) {}
 		
 		//TextField for Radius
 		tmpField = (TextField) gui.getActor(idPrefix + "INPUTFIELD_Radius");

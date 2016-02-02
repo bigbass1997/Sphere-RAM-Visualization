@@ -21,6 +21,7 @@ public class World {
 	
 	public Camera cam;
 	private final Vector3 camtmp = new Vector3();
+	public float camSpeed = 20f;
 	
 	public ImmediateModeRenderer20 rend;
 	public QuickRender quickRend;
@@ -73,39 +74,38 @@ public class World {
 		
 		Input input = Gdx.input;
 		
-		float speed = 10f * Gdx.graphics.getDeltaTime();
-		float mult = 2.0f;
+		float speed = camSpeed * delta;
 		
 		if (input.isKeyPressed(Keys.W)) {
-			camtmp.set(cam.direction).nor().scl(speed*mult);
+			camtmp.set(cam.direction).nor().scl(speed);
 			cam.position.add(camtmp);
 		}
 		if (input.isKeyPressed(Keys.S)) {
-			camtmp.set(cam.direction).nor().scl(-speed*mult);
+			camtmp.set(cam.direction).nor().scl(-speed);
 			cam.position.add(camtmp);
 		}
 		if (input.isKeyPressed(Keys.A)) {
-			camtmp.set(cam.direction).crs(cam.up).nor().scl(-speed*mult);
+			camtmp.set(cam.direction).crs(cam.up).nor().scl(-speed);
 			cam.position.add(camtmp);
 		}
 		if (input.isKeyPressed(Keys.D)) {
-			camtmp.set(cam.direction).crs(cam.up).nor().scl(speed*mult);
+			camtmp.set(cam.direction).crs(cam.up).nor().scl(speed);
 			cam.position.add(camtmp);
 		}
 		if (input.isKeyPressed(Keys.SPACE)) {
-			camtmp.set(cam.up).nor().scl(speed);
+			camtmp.set(cam.up).nor().scl(speed/2);
 			cam.position.add(camtmp);
 		}
 		if (input.isKeyPressed(Keys.SHIFT_LEFT)) {
-			camtmp.set(cam.up).nor().scl(-speed);
+			camtmp.set(cam.up).nor().scl(-speed/2);
 			cam.position.add(camtmp);
 		}
 		
 		if(input.isKeyPressed(Keys.Q)){
-			cam.rotate(-speed*(mult * 2), cam.direction.x, cam.direction.y, cam.direction.z);
+			cam.rotate(-(80f * delta), cam.direction.x, cam.direction.y, cam.direction.z);
 		}
 		if(input.isKeyPressed(Keys.E)){
-			cam.rotate(speed*(mult * 2), cam.direction.x, cam.direction.y, cam.direction.z);
+			cam.rotate(80f * delta, cam.direction.x, cam.direction.y, cam.direction.z);
 		}
 		
 		if(input.isButtonPressed(Buttons.LEFT)){
