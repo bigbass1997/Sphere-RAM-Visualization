@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -25,6 +26,7 @@ public class RAMSystem {
 	private World world;
 	public float radius, oldRadius;
 	public int n, oldN, sphereColor, cylColor;
+	public int spherePrimitiveType, oldSpherePrimitiveType, cylinderPrimitiveType, oldCylinderPrimitiveType;
 
 	private TextField tmpField;
 	private Label tmpLabel;
@@ -109,6 +111,27 @@ public class RAMSystem {
 		gui.addActor(idPrefix + "LABEL_Method", tmpLabel);
 		//-------//
 		
+		//SPHERE & CYLINDER GL RENDER SELECT BOX + LABEL\\
+		String[] glRendStrs = new String[]{"Sphere", "Cylinder"};
+		for(int i = 0; i < glRendStrs.length; i++){
+			tmpSelectBox = new SelectBox<String>(SkinManager.getSkin("fonts/computer.ttf", 26));
+			tmpSelectBox.setWidth(100);
+			tmpSelectBox.setPosition(Gdx.graphics.getWidth() - tmpSelectBox.getWidth() - buf, Gdx.graphics.getHeight() - ((buf + tmpSelectBox.getHeight()) * (inputIds.length + 2 + i)) + buf);
+			tmpSelectBox.setItems("GL_POINTS", "GL_LINES", "GL_TRIANGLES");
+			tmpSelectBox.setSelected("GL_LINES");
+			gui.addActor(idPrefix + "SELECTBOX_" + glRendStrs[i] + "Render", tmpSelectBox);
+			
+			tmpLabel = new Label(glRendStrs[i] + " Render:", SkinManager.getSkin("fonts/computer.ttf", 28));
+			tmpLabel.setColor(Color.WHITE);
+			tmpLabel.setAlignment(Align.right);
+			tmpLabel.setPosition(
+					tmpSelectBox.getX() - tmpLabel.getPrefWidth() - 2,
+					tmpSelectBox.getY() + ((tmpLabel.getHeight() - tmpLabel.getStyle().font.getLineHeight()) * 2)
+			);
+			gui.addActor(idPrefix + "LABEL_" + glRendStrs[i] + "Render", tmpLabel);
+		}
+		//-------//
+		
 		//Data Label
 		gui.addActor(idPrefix + "INFOLABEL", new Label("", SkinManager.getSkin("fonts/computer.ttf", 24)));
 		gui.getActor(idPrefix + "INFOLABEL").setColor(Color.WHITE);
@@ -141,7 +164,7 @@ public class RAMSystem {
 	}
 	
 	private void createSphere(){
-		world.addObject(idPrefix + "SPHERE", new Sphere(0, 0, 0, radius, 50, sphereColor));
+		world.addObject(idPrefix + "SPHERE", new Sphere(0, 0, 0, radius, 50, sphereColor, spherePrimitiveType));
 	}
 	
 	private void createCylinders(Method method){
@@ -155,7 +178,7 @@ public class RAMSystem {
 			yList = RAMUtil.getList("sqrt(r^2 - x^2)", -radius, radius, radius, width);
 			
 			for(int i = 0; i < yList.size(); i++){
-				world.addObject(idPrefix + "CYLINDER_" + i, new Cylinder(((float) x), 0, 0, yList.get(i).floatValue(), (float) width, yList.get(i).floatValue(), 50, cylColor));
+				world.addObject(idPrefix + "CYLINDER_" + i, new Cylinder(((float) x), 0, 0, yList.get(i).floatValue(), (float) width, yList.get(i).floatValue(), 50, cylColor, cylinderPrimitiveType));
 				
 				x += width;
 			}
@@ -165,7 +188,7 @@ public class RAMSystem {
 			yList = RAMUtil.getList("sqrt(r^2 - x^2)", (-radius) + (width/2), (radius) + (width/2), radius, width);
 			
 			for(int i = 0; i < yList.size(); i++){
-				world.addObject(idPrefix + "CYLINDER_" + i, new Cylinder(((float) x), 0, 0, yList.get(i).floatValue(), (float) width, yList.get(i).floatValue(), 50, cylColor));
+				world.addObject(idPrefix + "CYLINDER_" + i, new Cylinder(((float) x), 0, 0, yList.get(i).floatValue(), (float) width, yList.get(i).floatValue(), 50, cylColor, cylinderPrimitiveType));
 				
 				x += width;
 			}
@@ -175,7 +198,7 @@ public class RAMSystem {
 			yList = RAMUtil.getList("sqrt(r^2 - x^2)", (-radius) + (width), (radius) + (width), radius, width);
 			
 			for(int i = 0; i < yList.size(); i++){
-				world.addObject(idPrefix + "CYLINDER_" + i, new Cylinder(((float) x), 0, 0, yList.get(i).floatValue(), (float) width, yList.get(i).floatValue(), 50, cylColor));
+				world.addObject(idPrefix + "CYLINDER_" + i, new Cylinder(((float) x), 0, 0, yList.get(i).floatValue(), (float) width, yList.get(i).floatValue(), 50, cylColor, cylinderPrimitiveType));
 				
 				x += width;
 			}
@@ -222,10 +245,50 @@ public class RAMSystem {
 		}
 		if(!oldMethod.equals(method)) toRecreate = true;
 		
+		//SelectBox for SphereRender
+		try {
+			@SuppressWarnings("unchecked")
+			SelectBox<String> tmpBox = (SelectBox<String>) gui.getActor(idPrefix + "SELECTBOX_SphereRender");
+			String selection = tmpBox.getSelected();
+			if(selection.equals("GL_POINTS")){
+				spherePrimitiveType = GL20.GL_POINTS;
+			} else if(selection.equals("GL_LINES")){
+				spherePrimitiveType = GL20.GL_LINES;
+			} else if(selection.equals("GL_TRIANGLES")){
+				spherePrimitiveType = GL20.GL_TRIANGLES;
+			} else {
+				spherePrimitiveType = oldSpherePrimitiveType;
+			}
+		} catch(Exception e) {
+			spherePrimitiveType = oldSpherePrimitiveType;
+		}
+		if(oldSpherePrimitiveType != spherePrimitiveType) toRecreate = true;
+		
+		//SelectBox for CylinderRender
+		try {
+			@SuppressWarnings("unchecked")
+			SelectBox<String> tmpBox = (SelectBox<String>) gui.getActor(idPrefix + "SELECTBOX_CylinderRender");
+			String selection = tmpBox.getSelected();
+			if(selection.equals("GL_POINTS")){
+				cylinderPrimitiveType = GL20.GL_POINTS;
+			} else if(selection.equals("GL_LINES")){
+				cylinderPrimitiveType = GL20.GL_LINES;
+			} else if(selection.equals("GL_TRIANGLES")){
+				cylinderPrimitiveType = GL20.GL_TRIANGLES;
+			} else {
+				cylinderPrimitiveType = oldCylinderPrimitiveType;
+			}
+		} catch(Exception e) {
+			cylinderPrimitiveType = oldCylinderPrimitiveType;
+		}
+		if(oldCylinderPrimitiveType != cylinderPrimitiveType) toRecreate = true;
+		
 		if(toRecreate) recreate();
 		oldRadius = radius;
 		oldN = n;
 		oldMethod = method;
+		oldSpherePrimitiveType = spherePrimitiveType;
+		oldCylinderPrimitiveType = cylinderPrimitiveType;
 		
 		gui.update(delta);
 		

@@ -16,16 +16,18 @@ import com.badlogic.gdx.math.Vector3;
 public class Sphere extends Object {
 	
 	public int divisions = 0;
+	public int primitiveType;
 	
-	public Sphere(Vector3 pos, float radius, int divisions, int color){
-		this(pos.x, pos.y, pos.z, radius, divisions, color);
+	public Sphere(Vector3 pos, float radius, int divisions, int color, int primitiveType){
+		this(pos.x, pos.y, pos.z, radius, divisions, color, primitiveType);
 	}
 	
-	public Sphere(float x, float y, float z, float radius, int divisions, int color){
+	public Sphere(float x, float y, float z, float radius, int divisions, int color, int primitiveType){
 		this.pos = new Vector3(x, y, z);
 		this.size = new Vector3(radius, radius, radius);
 		this.divisions = divisions;
 		this.color = color;
+		this.primitiveType = primitiveType;
 		
 		model = createModel(radius, divisions);
 		modelInstance = new ModelInstance(model);
@@ -57,7 +59,7 @@ public class Sphere extends Object {
 	private Model createModel(float radius, int divisions){
 		ModelBuilder modelBuilder = new ModelBuilder();
 		return modelBuilder.createSphere(radius, radius, radius,
-				divisions, divisions, GL20.GL_LINES,
+				divisions, divisions, primitiveType,
 				new Material(ColorAttribute.createDiffuse(new Color(color))),
 				Usage.Position | Usage.Normal);
 	}

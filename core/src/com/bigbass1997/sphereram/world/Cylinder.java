@@ -16,16 +16,18 @@ import com.badlogic.gdx.math.Vector3;
 public class Cylinder extends Object {
 	
 	public int divisions = 0;
+	public int primitiveType;
 	
-	public Cylinder(Vector3 pos, Vector3 size, int divisions, int color){
-		this(pos.x, pos.y, pos.z, size.x, size.y, size.z, divisions, color);
+	public Cylinder(Vector3 pos, Vector3 size, int divisions, int color, int primitiveType){
+		this(pos.x, pos.y, pos.z, size.x, size.y, size.z, divisions, color, primitiveType);
 	}
 	
-	public Cylinder(float x, float y, float z, float sx, float sy, float sz, int divisions, int color){
+	public Cylinder(float x, float y, float z, float sx, float sy, float sz, int divisions, int color, int primitiveType){
 		this.pos = new Vector3((x/2) + (sy/4), y/2, z/2);
 		this.size = new Vector3(sx, sy/2, sz);
 		this.divisions = divisions;
 		this.color = color;
+		this.primitiveType = primitiveType;
 		
 		model = createModel(divisions);
 		modelInstance = new ModelInstance(model);
@@ -66,7 +68,7 @@ public class Cylinder extends Object {
 	private Model createModel(int divisions){
 		ModelBuilder modelBuilder = new ModelBuilder();
 		return modelBuilder.createCylinder(size.x, size.y, size.z,
-				divisions, GL20.GL_LINES,
+				divisions, primitiveType,
 				new Material(ColorAttribute.createDiffuse(new Color(color))),
 				Usage.Position | Usage.Normal);
 	}
