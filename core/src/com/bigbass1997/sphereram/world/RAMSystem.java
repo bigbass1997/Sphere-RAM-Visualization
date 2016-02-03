@@ -117,7 +117,7 @@ public class RAMSystem {
 			tmpSelectBox = new SelectBox<String>(SkinManager.getSkin("fonts/computer.ttf", 26));
 			tmpSelectBox.setWidth(100);
 			tmpSelectBox.setPosition(Gdx.graphics.getWidth() - tmpSelectBox.getWidth() - buf, Gdx.graphics.getHeight() - ((buf + tmpSelectBox.getHeight()) * (inputIds.length + 2 + i)) + buf);
-			tmpSelectBox.setItems("GL_POINTS", "GL_LINES", "GL_TRIANGLES");
+			tmpSelectBox.setItems("POINTS", "LINES", "TRIANGLES");
 			tmpSelectBox.setSelected("GL_LINES");
 			gui.addActor(idPrefix + "SELECTBOX_" + glRendStrs[i] + "Render", tmpSelectBox);
 			
@@ -250,11 +250,11 @@ public class RAMSystem {
 			@SuppressWarnings("unchecked")
 			SelectBox<String> tmpBox = (SelectBox<String>) gui.getActor(idPrefix + "SELECTBOX_SphereRender");
 			String selection = tmpBox.getSelected();
-			if(selection.equals("GL_POINTS")){
+			if(selection.equals("POINTS")){
 				spherePrimitiveType = GL20.GL_POINTS;
-			} else if(selection.equals("GL_LINES")){
+			} else if(selection.equals("LINES")){
 				spherePrimitiveType = GL20.GL_LINES;
-			} else if(selection.equals("GL_TRIANGLES")){
+			} else if(selection.equals("TRIANGLES")){
 				spherePrimitiveType = GL20.GL_TRIANGLES;
 			} else {
 				spherePrimitiveType = oldSpherePrimitiveType;
@@ -269,11 +269,11 @@ public class RAMSystem {
 			@SuppressWarnings("unchecked")
 			SelectBox<String> tmpBox = (SelectBox<String>) gui.getActor(idPrefix + "SELECTBOX_CylinderRender");
 			String selection = tmpBox.getSelected();
-			if(selection.equals("GL_POINTS")){
+			if(selection.equals("POINTS")){
 				cylinderPrimitiveType = GL20.GL_POINTS;
-			} else if(selection.equals("GL_LINES")){
+			} else if(selection.equals("LINES")){
 				cylinderPrimitiveType = GL20.GL_LINES;
-			} else if(selection.equals("GL_TRIANGLES")){
+			} else if(selection.equals("TRIANGLES")){
 				cylinderPrimitiveType = GL20.GL_TRIANGLES;
 			} else {
 				cylinderPrimitiveType = oldCylinderPrimitiveType;
