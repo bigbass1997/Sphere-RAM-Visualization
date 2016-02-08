@@ -118,7 +118,7 @@ public class RAMSystem {
 			tmpSelectBox.setWidth(100);
 			tmpSelectBox.setPosition(Gdx.graphics.getWidth() - tmpSelectBox.getWidth() - buf, Gdx.graphics.getHeight() - ((buf + tmpSelectBox.getHeight()) * (inputIds.length + 2 + i)) + buf);
 			tmpSelectBox.setItems("POINTS", "LINES", "TRIANGLES");
-			tmpSelectBox.setSelected("GL_LINES");
+			tmpSelectBox.setSelected("LINES");
 			gui.addActor(idPrefix + "SELECTBOX_" + glRendStrs[i] + "Render", tmpSelectBox);
 			
 			tmpLabel = new Label(glRendStrs[i] + " Render:", SkinManager.getSkin("fonts/computer.ttf", 28));
